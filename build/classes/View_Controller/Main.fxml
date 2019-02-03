@@ -32,7 +32,7 @@
                <children>
                   <Button layoutX="251.0" layoutY="283.0" mnemonicParsing="false" onAction="#viewAddPartStage" text="Add" />
                   <Button layoutX="317.0" layoutY="283.0" mnemonicParsing="false" onAction="#viewModifyPartStage" text="Modify" />
-                  <Button layoutX="410.0" layoutY="283.0" mnemonicParsing="false" text="Delete" />
+                  <Button layoutX="410.0" layoutY="283.0" mnemonicParsing="false" onAction="#deletePart" text="Delete" />
                </children>
             </HBox>
          </children>

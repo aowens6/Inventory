@@ -185,6 +185,23 @@ public class MainController extends Application{
 //      productsTable.getSelectionModel().selectFirst();
   }
   
+  @FXML
+  private void deletePart(){
+    
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
+    alert.initModality(Modality.APPLICATION_MODAL);
+    alert.setTitle("Confirm Delete");
+    alert.setContentText("Are you sure you want to delete this part?");
+    alert.showAndWait();
+    
+    if(alert.getResult() == ButtonType.OK){
+      Inventory.removePart(partsTable.getSelectionModel().getSelectedItem());
+    }else{
+      alert.close();
+    }
+    
+  }
+  
   public static void main(String[] args){
     launch(args);
   }

@@ -24,4 +24,9 @@ public class Inventory {
   public static void updatePart(int index, Part part){
     parts.set(index, part);
   }
+  
+  public static void removePart(Part part){
+    parts.remove(part);
+  }
+
 }
