@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="462.0" prefWidth="488.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.PartController">
+   <children>
+      <Label fx:id="addModLabel" layoutX="14.0" layoutY="32.0" text="Add Part">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <RadioButton fx:id="inHouse" layoutX="169.0" layoutY="40.0" mnemonicParsing="false" onAction="#sourceToggle" selected="true" text="In-house">
+         <toggleGroup>
+            <ToggleGroup fx:id="sourceGroup" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="outSourced" layoutX="316.0" layoutY="40.0" mnemonicParsing="false" onAction="#sourceToggle" text="Outsourced" toggleGroup="$sourceGroup" />
+      <HBox layoutX="27.0" layoutY="88.0" prefHeight="41.0" prefWidth="345.0">
+         <children>
+            <Label layoutX="27.0" layoutY="236.0" prefHeight="41.0" prefWidth="137.0" text="ID" />
+            <TextField fx:id="addID" disable="true" layoutX="168.0" layoutY="230.0" prefHeight="39.0" prefWidth="172.0" />
+         </children>
+      </HBox>
+      <HBox layoutX="27.0" layoutY="139.0" prefHeight="41.0" prefWidth="345.0">
+         <children>
+            <Label layoutX="27.0" layoutY="236.0" prefHeight="41.0" prefWidth="137.0" text="Name" />
+            <TextField fx:id="addName" layoutX="168.0" layoutY="230.0" prefHeight="39.0" prefWidth="172.0" />
+         </children>
+      </HBox>
+      <HBox layoutX="27.0" layoutY="241.0">
+         <children>
+            <HBox layoutX="27.0" layoutY="241.0" prefHeight="41.0" prefWidth="238.0" />
+         </children>
+      </HBox>
+      
+      <HBox layoutX="27.0" layoutY="192.0" prefHeight="41.0" prefWidth="345.0">
+         <children>
+            <Label layoutX="27.0" layoutY="236.0" prefHeight="41.0" prefWidth="137.0" text="Price/Cost" />
+            <TextField fx:id="addPrice" layoutX="168.0" layoutY="230.0" prefHeight="39.0" prefWidth="172.0" />
+         </children>
+      </HBox>
+      <HBox layoutX="27.0" layoutY="241.0" prefHeight="41.0" prefWidth="345.0">
+         <children>
+            <Label prefHeight="41.0" prefWidth="137.0" text="Inv" />
+            <TextField fx:id="addInv" layoutX="168.0" layoutY="230.0" prefHeight="39.0" prefWidth="172.0" />
+         </children>
+      </HBox>
+      <HBox layoutX="27.0" layoutY="294.0">
+         <children>
+            <HBox layoutX="27.0" layoutY="307.0" prefHeight="41.0" prefWidth="238.0">
+               <children>
+                  <Label prefHeight="41.0" prefWidth="137.0" text="Max" />
+                  <TextField fx:id="addMax" layoutX="168.0" layoutY="230.0" prefHeight="39.0" prefWidth="87.0" />
+               </children>
+            </HBox>
+            <HBox layoutX="285.0" layoutY="307.0" prefHeight="41.0" prefWidth="188.0">
+               <children>
+                  <Label prefHeight="41.0" prefWidth="64.0" text="Min" />
+                  <TextField fx:id="addMin" layoutX="168.0" layoutY="230.0" prefHeight="39.0" prefWidth="87.0" />
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+      <HBox layoutX="27.0" layoutY="347.0" prefHeight="41.0" prefWidth="345.0">
+         <children>
+            <Label fx:id="sourceLabel" prefHeight="41.0" prefWidth="137.0" text="Machine ID" />
+            <TextField fx:id="addMachineID" layoutX="168.0" layoutY="230.0" prefHeight="39.0" prefWidth="172.0" />
+         </children>
+      </HBox>
+      <Button layoutX="248.0" layoutY="408.0" mnemonicParsing="false" onAction="#savePart" prefHeight="39.0" prefWidth="77.0" text="Save" />
+      <Button layoutX="347.0" layoutY="408.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+   </children>
+</AnchorPane>
