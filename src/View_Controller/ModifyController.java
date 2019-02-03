@@ -10,12 +10,16 @@ import Model.Inventory;
 import Model.Outsourced;
 import Model.Part;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -110,14 +114,28 @@ public class ModifyController{
     }
     
     Inventory.updatePart(Inventory.parts.indexOf(this.part), part);
+    
     Stage stage = (Stage) anchorPane.getScene().getWindow();
     stage.close();
   }
   
-  @FXML
-  private void cancel(ActionEvent event) {
-      System.out.println("You clicked cancel");
+  public void cancel(Event e) {
+      
+    e.consume();
+    System.out.println("You clicked cancel");
 
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
+    alert.initModality(Modality.APPLICATION_MODAL);
+    alert.setTitle("Confirm exit");
+    alert.setContentText("Are you sure you want to leave without saving?");
+    alert.showAndWait();
+
+    if(alert.getResult() == ButtonType.OK){
+      Stage stage = (Stage) anchorPane.getScene().getWindow();
+      stage.close();
+    }else{
+      alert.close();
+    }
   }
   
 }

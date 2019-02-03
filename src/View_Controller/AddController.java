@@ -16,14 +16,16 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 /**
  * FXML Controller class
@@ -70,8 +72,6 @@ public class AddController implements Initializable {
 
   String selectedSource;
 
-  Stage stage;
-
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     selectedSource = "In-house";
@@ -94,9 +94,6 @@ public class AddController implements Initializable {
 //    stage.setOnCloseRequest(event -> cancel(event));
   }
   
-  public void setStage(){
-    this.stage = (Stage) anchorPane.getScene().getWindow();
-  }
 
   @FXML
   private void savePart() {
@@ -131,20 +128,21 @@ public class AddController implements Initializable {
   
   public void cancel(Event e) {
       
-//      e.consume();
+      e.consume();
       System.out.println("You clicked cancel");
-//    
-//      Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
-//      alert.initModality(Modality.APPLICATION_MODAL);
-//      alert.setTitle("Confirm exit");
-//      alert.setContentText("Are you sure you want to leave without saving?");
-//      alert.showAndWait();
-//
-//      if(alert.getResult() == ButtonType.OK){
-//        stage.close();
-//      }else{
-//        alert.close();
-//      }
+    
+      Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
+      alert.initModality(Modality.APPLICATION_MODAL);
+      alert.setTitle("Confirm exit");
+      alert.setContentText("Are you sure you want to leave without saving?");
+      alert.showAndWait();
+
+      if(alert.getResult() == ButtonType.OK){
+        Stage stage = (Stage) anchorPane.getScene().getWindow();
+        stage.close();
+      }else{
+        alert.close();
+      }
   }
 
   @FXML

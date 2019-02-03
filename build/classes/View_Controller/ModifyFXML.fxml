@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="462.0" prefWidth="488.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.ModifyController">
+<AnchorPane fx:id="anchorPane" id="AnchorPane" prefHeight="462.0" prefWidth="488.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.ModifyController">
    <children>
       <Label fx:id="addModLabel" layoutX="14.0" layoutY="32.0" text="Modify Part">
          <font>
