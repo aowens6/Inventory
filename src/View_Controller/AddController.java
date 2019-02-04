@@ -128,21 +128,21 @@ public class AddController implements Initializable {
   
   public void cancel(Event e) {
       
-      e.consume();
-      System.out.println("You clicked cancel");
-    
-      Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
-      alert.initModality(Modality.APPLICATION_MODAL);
-      alert.setTitle("Confirm exit");
-      alert.setContentText("Are you sure you want to leave without saving?");
-      alert.showAndWait();
+    e.consume();
+    System.out.println("You clicked cancel");
 
-      if(alert.getResult() == ButtonType.OK){
-        Stage stage = (Stage) anchorPane.getScene().getWindow();
-        stage.close();
-      }else{
-        alert.close();
-      }
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
+    alert.initModality(Modality.APPLICATION_MODAL);
+    alert.setTitle("Confirm exit");
+    alert.setContentText("Are you sure you want to leave without saving?");
+    alert.showAndWait();
+
+    if(alert.getResult() == ButtonType.OK){
+      Stage stage = (Stage) anchorPane.getScene().getWindow();
+      stage.close();
+    }else{
+      alert.close();
+    }
   }
 
   @FXML

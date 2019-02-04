@@ -7,6 +7,7 @@ package Model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 
 /**
  *
@@ -16,6 +17,7 @@ import javafx.collections.ObservableList;
 public class Inventory {
   
   public static ObservableList<Part> parts = FXCollections.observableArrayList();
+  public static FilteredList<Part> filteredParts = new FilteredList(parts, p -> true);
   
   public static void addPart(Part part){
     parts.add(part);
@@ -25,8 +27,29 @@ public class Inventory {
     parts.set(index, part);
   }
   
-  public static void removePart(Part part){
+  public static void deletePart(Part part){
     parts.remove(part);
   }
-
+  
+  public static Part lookupPart(int id){
+    
+    for(Part p : parts){
+      if(p.getPartID() == id){
+        return p;
+      }
+    }
+    
+    return null;
+  }
+  
+    public static Part lookupPartName(String name){
+    
+    for(Part p : parts){
+      if(p.getName().toLowerCase().contains(name)){
+        return p;
+      }
+    }
+    
+    return null;
+  }
 }

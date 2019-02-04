@@ -13,15 +13,19 @@ import Model.Product;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -63,8 +67,12 @@ public class MainController extends Application{
   TableColumn<Product, Double> prodPrice;
   
   public ObservableList<Part> parts = Inventory.parts;
+  public FilteredList<Part> filteredParts = Inventory.filteredParts;
 //  public static ModifyController modController;
   Part currentPart;
+  
+  @FXML
+  TextField searchField;
 
   @Override
   public void start(Stage stage){
@@ -106,6 +114,70 @@ public class MainController extends Application{
     }catch(Exception e){
       e.printStackTrace();
     }
+    
+  }
+  
+  @FXML
+  private void searchParts(){
+    
+    String searchText = searchField.getText().toLowerCase();
+    boolean found = false;
+    Part foundPart;
+    
+    if(null != Inventory.lookupPartName(searchText)){
+      foundPart = Inventory.lookupPartName(searchText);
+      partsTable.getSelectionModel().select(foundPart);
+      found = true;
+    }else{
+      try{
+        Integer searchInt = Integer.parseInt(searchText);
+        if (null != Inventory.lookupPart(searchInt)){
+          foundPart = Inventory.lookupPart(searchInt);
+          partsTable.getSelectionModel().select(foundPart);
+          found = true;
+        }
+      }catch(NumberFormatException e){
+        System.out.println("Not a number");
+      }
+    }
+    
+    if(found == false){
+      Alert alert = new Alert(AlertType.INFORMATION);
+      alert.setTitle("Search Error");
+      alert.setHeaderText("Part Not Found");
+      alert.setContentText("The search term does not match any part");
+      alert.showAndWait();
+    }
+    
+    searchField.clear();
+    
+//    searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+//
+//      filteredParts.setPredicate(part -> {
+//        
+//        if (newValue == null || newValue.isEmpty()) {
+//          return true;
+//        }
+//
+//        
+//        if(Integer.toString(part.getPartID()).contains(newValue)){
+//          partsTable.getSelectionModel().select(part);
+//          return true;
+//        }else if(newValue.length() > 1 && part.getName().toLowerCase().contains(newValue.toLowerCase())){
+//          partsTable.getSelectionModel().select(part);
+//          return true;
+//        }  
+//        
+//        return false;
+//      });
+//      
+//      SortedList<Part> sortedParts = new SortedList<>(filteredParts);
+//      
+//      sortedParts.comparatorProperty().bind(partsTable.comparatorProperty());
+//      
+//      partsTable.setItems(sortedParts);
+//    
+//    });
     
   }
   
@@ -195,7 +267,7 @@ public class MainController extends Application{
     alert.showAndWait();
     
     if(alert.getResult() == ButtonType.OK){
-      Inventory.removePart(partsTable.getSelectionModel().getSelectedItem());
+      Inventory.deletePart(partsTable.getSelectionModel().getSelectedItem());
     }else{
       alert.close();
     }
