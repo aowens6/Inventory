@@ -5,7 +5,9 @@
  */
 package Model;
 
+import static Model.Inventory.allParts;
 import Model.Part;
+import View_Controller.AddProductController;
 import java.util.ArrayList;
 import javafx.collections.ObservableList;
 
@@ -22,6 +24,10 @@ public class Product {
   int inStock;
   int min;
   int max;
+  
+  public Product() {
+    
+  }
 
   public Product(ObservableList<Part> associatedParts, int productID, String name, double price, int inStock, int min, int max) {
     this.associatedParts = associatedParts;
@@ -31,6 +37,44 @@ public class Product {
     this.inStock = inStock;
     this.min = min;
     this.max = max;
+  }
+  
+  public void addAssociatedPart(Part part){
+//    System.out.println("In addpart");
+    this.associatedParts.add(part);
+  }
+  
+  public boolean removeAssociatedPart(Integer index){
+    this.associatedParts.remove(index);
+    return true;
+  }
+  
+  public static Part lookupAssociatedPart(int id){
+
+    for(Part p : AddProductController.availableParts){
+      if(p.getPartID() == id){
+        return p;
+      }
+    }
+    return null;
+  }
+  
+  public static Part lookupAssociatedPartName(String name){
+
+    for(Part p : AddProductController.availableParts){
+      if(p.getName().toLowerCase().contains(name)){
+        return p;
+      }
+    }
+    return null;
+  }
+
+  public ObservableList<Part> getAssociatedParts() {
+    return associatedParts;
+  }
+
+  public void setAssociatedParts(ObservableList<Part> associatedParts) {
+    this.associatedParts = associatedParts;
   }
   
   public int getProductID() {

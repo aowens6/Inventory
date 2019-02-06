@@ -47,8 +47,8 @@
             </Label>
             <HBox layoutX="299.0" layoutY="20.0" spacing="10.0">
                <children>
-                  <Button layoutX="178.0" layoutY="28.0" mnemonicParsing="false" text="Search" />
-                  <TextField layoutX="264.0" layoutY="28.0" prefHeight="39.0" prefWidth="166.0" AnchorPane.rightAnchor="80.0" />
+                  <Button layoutX="178.0" layoutY="28.0" mnemonicParsing="false" onAction="#searchProducts" text="Search" />
+                  <TextField fx:id="prodSearchField" layoutX="264.0" layoutY="28.0" prefHeight="39.0" prefWidth="166.0" AnchorPane.rightAnchor="80.0" />
                </children>
             </HBox>
             <TableView fx:id="productsTable" layoutX="27.0" layoutY="73.0" prefHeight="200.0" prefWidth="525.0">
@@ -61,9 +61,9 @@
             </TableView>
             <HBox layoutX="318.0" layoutY="287.0" spacing="10.0">
                <children>
-                  <Button layoutX="251.0" layoutY="283.0" mnemonicParsing="false" text="Add" />
-                  <Button layoutX="317.0" layoutY="283.0" mnemonicParsing="false" text="Modify" />
-                  <Button layoutX="410.0" layoutY="283.0" mnemonicParsing="false" text="Delete" />
+                  <Button layoutX="251.0" layoutY="283.0" mnemonicParsing="false" onAction="#addProduct" text="Add" />
+                  <Button layoutX="317.0" layoutY="283.0" mnemonicParsing="false" onAction="#modifyProduct" text="Modify" />
+                  <Button layoutX="410.0" layoutY="283.0" mnemonicParsing="false" onAction="#deleteProduct" text="Delete" />
                </children>
             </HBox>
          </children>

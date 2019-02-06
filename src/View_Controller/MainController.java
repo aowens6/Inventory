@@ -12,9 +12,9 @@ import Model.Part;
 import Model.Product;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -66,13 +66,14 @@ public class MainController extends Application{
   @FXML
   TableColumn<Product, Double> prodPrice;
   
-  public ObservableList<Part> parts = Inventory.parts;
-  public FilteredList<Part> filteredParts = Inventory.filteredParts;
+  public ObservableList<Part> parts = Inventory.allParts;
+  public ObservableList<Product> products = Inventory.products;
+//  public FilteredList<Part> filteredParts = Inventory.filteredParts;
 //  public static ModifyController modController;
   Part currentPart;
   
   @FXML
-  TextField searchField;
+  TextField searchField, prodSearchField;
 
   @Override
   public void start(Stage stage){
@@ -96,13 +97,13 @@ public class MainController extends Application{
   private void viewAddPartStage(){
     System.out.println("You clicked add part");
     try{
-      FXMLLoader addLoader = new FXMLLoader(getClass().getResource("AddPartFXML.fxml"));
+      FXMLLoader addLoader = new FXMLLoader(getClass().getResource("AddPart.fxml"));
       Parent addPartParent = (Parent) addLoader.load();
       Scene addPartScene = new Scene(addPartParent);
 
       Stage stage = new Stage();
       
-      AddController addController = addLoader.getController();
+      AddPartController addController = addLoader.getController();
       stage.setOnCloseRequest(event -> addController.cancel(event));
       
       stage.initModality(Modality.APPLICATION_MODAL);
@@ -124,11 +125,12 @@ public class MainController extends Application{
     boolean found = false;
     Part foundPart;
     
+    //First check if the search term matches a name of a part
     if(null != Inventory.lookupPartName(searchText)){
       foundPart = Inventory.lookupPartName(searchText);
       partsTable.getSelectionModel().select(foundPart);
       found = true;
-    }else{
+    }else{ //otherwise, look for the id
       try{
         Integer searchInt = Integer.parseInt(searchText);
         if (null != Inventory.lookupPart(searchInt)){
@@ -185,11 +187,11 @@ public class MainController extends Application{
   private void viewModifyPartStage(){
     System.out.println("You clicked modify part");
     try{
-      FXMLLoader modPartFXML = new FXMLLoader(getClass().getResource("ModifyFXML.fxml"));
+      FXMLLoader modPartFXML = new FXMLLoader(getClass().getResource("ModifyPart.fxml"));
       Parent modPartParent = (Parent) modPartFXML.load();
       Scene modPartScene = new Scene(modPartParent);
       
-      ModifyController modController = modPartFXML.getController();
+      ModifyPartController modController = modPartFXML.getController();
       modController.setPart(partsTable.getSelectionModel().getSelectedItem());
       
       Stage stage = new Stage();
@@ -204,6 +206,92 @@ public class MainController extends Application{
       e.printStackTrace();
     }
     
+  } 
+  
+  @FXML
+  public void addProduct(){
+    try{
+      FXMLLoader addProductFXML = new FXMLLoader(getClass().getResource("AddProduct.fxml"));
+      Parent addProductParent = (Parent) addProductFXML.load();
+      Scene addProdScene = new Scene(addProductParent);
+      
+      AddProductController addProdController = addProductFXML.getController();
+      
+      Stage stage = new Stage();
+
+//      stage.setOnCloseRequest(event -> addProdController.cancel(event));
+      addProdController.setAvailParts(parts);
+      stage.initModality(Modality.APPLICATION_MODAL);
+      stage.setScene(addProdScene);
+      stage.setTitle("Add Product");
+      stage.show();
+      
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+  }
+  
+  @FXML
+  public void modifyProduct(){
+    try{
+      FXMLLoader modifyProductFXML = new FXMLLoader(getClass().getResource("ModifyProduct.fxml"));
+      Parent modifyProductParent = (Parent) modifyProductFXML.load();
+      Scene modifyProdScene = new Scene(modifyProductParent);
+
+      ModifyProductController modProdController = modifyProductFXML.getController();
+      modProdController.setProduct(productsTable.getSelectionModel().getSelectedItem());
+      
+      Stage stage = new Stage();
+
+      stage.initModality(Modality.APPLICATION_MODAL);
+      stage.setScene(modifyProdScene);
+      stage.setTitle("Modify Product");
+      stage.show();
+      
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+  }
+  
+  @FXML
+  private void deleteProduct(){
+
+    Inventory.removeProduct(productsTable.getSelectionModel().getSelectedItem());
+  }
+  
+  @FXML
+  private void searchProducts(){
+    String searchText = prodSearchField.getText().toLowerCase();
+    boolean found = false;
+    Product foundProduct;
+    
+    //First check if the search term matches a name of a product
+    if(null != Inventory.lookupProductName(searchText)){
+      foundProduct = Inventory.lookupProductName(searchText);
+      productsTable.getSelectionModel().select(foundProduct);
+      found = true;
+    }else{ //otherwise, look for the id
+      try{
+        Integer searchInt = Integer.parseInt(searchText);
+        if (null != Inventory.lookupProduct(searchInt)){
+          foundProduct = Inventory.lookupProduct(searchInt);
+          productsTable.getSelectionModel().select(foundProduct);
+          found = true;
+        }
+      }catch(NumberFormatException e){
+        System.out.println("Not a number");
+      }
+    }
+    
+    if(found == false){
+      Alert alert = new Alert(AlertType.INFORMATION);
+      alert.setTitle("Search Error");
+      alert.setHeaderText("Part Not Found");
+      alert.setContentText("The search term does not match any part");
+      alert.showAndWait();
+    }
+    
+    prodSearchField.clear();
   }
   
   public void exitProgram(Event e){
@@ -243,18 +331,16 @@ public class MainController extends Application{
     prodName.setCellValueFactory(new PropertyValueFactory<>("name"));
     prodInvLvl.setCellValueFactory(new PropertyValueFactory<>("inStock"));
     prodPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+      
+    products.add(new Product(parts, 546, "partPackage1", 29.00, 10, 1, 99));
+    products.add(new Product(parts, 546, "partPackage2", 27.00, 10, 1, 99));
+    products.add(new Product(parts, 546, "partPackage3", 26.00, 10, 1, 99));
+    products.add(new Product(parts, 546, "partPackage4", 25.00, 10, 1, 99));
 
-//      ObservableList<Product> products = FXCollections.observableArrayList();
-//      
-//      products.add(new Product(parts, 546, "partPackage1", 29.00, 10, 1, 99));
-//      products.add(new Product(parts, 546, "partPackage2", 27.00, 10, 1, 99));
-//      products.add(new Product(parts, 546, "partPackage3", 26.00, 10, 1, 99));
-//      products.add(new Product(parts, 546, "partPackage4", 25.00, 10, 1, 99));
-//      
-//      productsTable.setItems(products);
+    productsTable.setItems(products);
 
     partsTable.getSelectionModel().selectFirst();
-//      productsTable.getSelectionModel().selectFirst();
+    productsTable.getSelectionModel().selectFirst();
   }
   
   @FXML

@@ -16,24 +16,26 @@ import javafx.collections.transformation.FilteredList;
 
 public class Inventory {
   
-  public static ObservableList<Part> parts = FXCollections.observableArrayList();
-  public static FilteredList<Part> filteredParts = new FilteredList(parts, p -> true);
+  public static ObservableList<Part> allParts = FXCollections.observableArrayList();
+  public static ObservableList<Product> products = FXCollections.observableArrayList();
+  public static ObservableList<Part> availableParts = FXCollections.observableArrayList(allParts);
+//  public static FilteredList<Part> filteredParts = new FilteredList(allParts, p -> true);
   
   public static void addPart(Part part){
-    parts.add(part);
+    allParts.add(part);
   }
   
   public static void updatePart(int index, Part part){
-    parts.set(index, part);
+    allParts.set(index, part);
   }
   
   public static void deletePart(Part part){
-    parts.remove(part);
+    allParts.remove(part);
   }
   
   public static Part lookupPart(int id){
     
-    for(Part p : parts){
+    for(Part p : allParts){
       if(p.getPartID() == id){
         return p;
       }
@@ -42,14 +44,45 @@ public class Inventory {
     return null;
   }
   
-    public static Part lookupPartName(String name){
+  public static Part lookupPartName(String name){
     
-    for(Part p : parts){
+    for(Part p : allParts){
       if(p.getName().toLowerCase().contains(name)){
         return p;
       }
     }
     
     return null;
+  }
+  
+  public static void addProduct(Product product){
+    products.add(product);
+  }
+  
+  public static void updateProduct(int index, Product product){
+    products.set(index, product);
+  }
+  
+  public static Product lookupProduct(int id){
+    for(Product p : products){
+      if(p.getProductID() == id){
+        return p;
+      }
+    }
+    return null;
+  }
+  
+  public static Product lookupProductName(String name){
+    for(Product p : products){
+      if(p.getName().toLowerCase().contains(name)){
+        return p;
+      }
+    }
+    return null;
+  }
+  
+  public static boolean removeProduct(Product product){
+    products.remove(product);
+    return true;
   }
 }

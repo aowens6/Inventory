@@ -32,45 +32,45 @@ import javafx.stage.Stage;
  *
  * @author Austyn
  */
-public class AddController implements Initializable {
+public class AddPartController implements Initializable {
     
   @FXML
-  AnchorPane anchorPane;
+  private AnchorPane anchorPane;
 
   @FXML 
-  ToggleGroup sourceGroup;
+  private ToggleGroup sourceGroup;
 
   @FXML
-  RadioButton inHouse;
+  private RadioButton inHouse;
 
   @FXML
-  RadioButton outSourced;
+  private RadioButton outSourced;
 
   @FXML
-  Label sourceLabel;
+  private Label sourceLabel;
 
   @FXML
-  TextField addID;
+  private TextField addID;
 
   @FXML
-  TextField addName;
+  private TextField addName;
 
   @FXML
-  TextField addPrice;
+  private TextField addPrice;
 
   @FXML
-  TextField addInv;
+  private TextField addInv;
 
   @FXML
-  TextField addMax;
+  private TextField addMax;
 
   @FXML
-  TextField addMin;
+  private TextField addMin;
 
   @FXML
-  TextField addMachineID;
+  private TextField addMachineID;
 
-  String selectedSource;
+  private String selectedSource;
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
@@ -81,7 +81,8 @@ public class AddController implements Initializable {
         selectedSource = chk.getText();
       }
     });
-
+    
+// DUMMY DATA DELETE LATER
     addID.setText("3");
     addName.setText("Boot");
     addPrice.setText("99");
@@ -133,7 +134,7 @@ public class AddController implements Initializable {
 
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
     alert.initModality(Modality.APPLICATION_MODAL);
-    alert.setTitle("Confirm exit");
+    alert.setTitle("Confirm Cancel");
     alert.setContentText("Are you sure you want to leave without saving?");
     alert.showAndWait();
 

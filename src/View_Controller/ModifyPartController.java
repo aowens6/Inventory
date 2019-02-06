@@ -9,6 +9,7 @@ import Model.InHouse;
 import Model.Inventory;
 import Model.Outsourced;
 import Model.Part;
+import Model.Product;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -27,48 +28,48 @@ import javafx.stage.Stage;
  *
  * @author Austyn
  */
-public class ModifyController{
+public class ModifyPartController{
 
   /**
    * Initializes the controller class.
    */
   @FXML
-  AnchorPane anchorPane;
+  private AnchorPane anchorPane;
   
   @FXML 
-  ToggleGroup sourceGroup;
+  private ToggleGroup sourceGroup;
 
   @FXML
-  RadioButton inHouse;
+  private RadioButton inHouse;
 
   @FXML
-  RadioButton outSourced;
+  private RadioButton outSourced;
 
   @FXML
-  Label sourceLabel;
+  private Label sourceLabel;
 
   @FXML
-  TextField modifyID;
+  private TextField modifyID;
 
   @FXML
-  TextField modifyName;
+  private TextField modifyName;
 
   @FXML
-  TextField modifyPrice;
+  private TextField modifyPrice;
 
   @FXML
-  TextField modifyInv;
+  private TextField modifyInv;
 
   @FXML
-  TextField modifyMax;
+  private TextField modifyMax;
 
   @FXML
-  TextField modifyMin;
+  private TextField modifyMin;
 
   @FXML
-  TextField modSourceID;
+  private TextField modSourceID;
   
-  Part part;
+  private Part part;
   
   public void setPart(Part part){
     
@@ -82,11 +83,11 @@ public class ModifyController{
     modifyMax.setText(Integer.toString(part.getMax()));
 
 
-    if (part instanceof InHouse){
+    if(part instanceof InHouse){
       inHouse.setSelected(true);
       InHouse p = (InHouse) part;
       modSourceID.setText(Integer.toString(p.getMachineID()));
-    } else {
+    }else{
       outSourced.setSelected(true);
       sourceLabel.setText("Company Name");
       Outsourced p = (Outsourced) part;
@@ -96,7 +97,7 @@ public class ModifyController{
   }
   
   @FXML
-  private void savePart() {
+  private void savePart(){
     System.out.println("You clicked savePart");
 
     this.part.setName(modifyName.getText());
@@ -113,7 +114,7 @@ public class ModifyController{
       p.setCompanyName(modSourceID.getText());
     }
     
-    Inventory.updatePart(Inventory.parts.indexOf(this.part), part);
+    Inventory.updatePart(Inventory.allParts.indexOf(this.part), part);
     
     Stage stage = (Stage) anchorPane.getScene().getWindow();
     stage.close();
