@@ -1,29 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Model;
 
-import static Model.Inventory.allParts;
-import Model.Part;
-import View_Controller.AddProductController;
-import java.util.ArrayList;
 import javafx.collections.ObservableList;
 
-/**
- *
- * @author Austyn
- */
 public class Product {
   
-  ObservableList<Part> associatedParts;
-  int productID;
-  String name;
-  double price;
-  int inStock;
-  int min;
-  int max;
+  private static ObservableList<Part> associatedParts;
+  private int productID;
+  private String name;
+  private double price;
+  private int inStock;
+  private int min;
+  private int max;
   
   public Product() {
     
@@ -39,19 +27,19 @@ public class Product {
     this.max = max;
   }
   
-  public void addAssociatedPart(Part part){
-//    System.out.println("In addpart");
-    this.associatedParts.add(part);
+  public static void addAssociatedPart(Part part){
+    System.out.println("In addpart");
+    associatedParts.add(part);
   }
   
-  public boolean removeAssociatedPart(Integer index){
-    this.associatedParts.remove(index);
+  public static boolean removeAssociatedPart(int index){
+    associatedParts.remove(index);
     return true;
   }
   
-  public static Part lookupAssociatedPart(int id){
+  public static Part lookupAssociatedPart(int id, ObservableList<Part> availableParts){
 
-    for(Part p : AddProductController.availableParts){
+    for(Part p : availableParts){
       if(p.getPartID() == id){
         return p;
       }
@@ -59,9 +47,9 @@ public class Product {
     return null;
   }
   
-  public static Part lookupAssociatedPartName(String name){
+  public static Part lookupAssociatedPartName(String name, ObservableList<Part> availableParts){
 
-    for(Part p : AddProductController.availableParts){
+    for(Part p : availableParts){
       if(p.getName().toLowerCase().contains(name)){
         return p;
       }

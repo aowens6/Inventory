@@ -1,16 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package View_Controller;
 
 import Model.InHouse;
 import Model.Inventory;
 import Model.Outsourced;
 import Model.Part;
-import Model.Product;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -18,26 +12,14 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author Austyn
- */
 public class ModifyPartController{
 
-  /**
-   * Initializes the controller class.
-   */
   @FXML
   private AnchorPane anchorPane;
-  
-  @FXML 
-  private ToggleGroup sourceGroup;
 
   @FXML
   private RadioButton inHouse;
@@ -49,25 +31,7 @@ public class ModifyPartController{
   private Label sourceLabel;
 
   @FXML
-  private TextField modifyID;
-
-  @FXML
-  private TextField modifyName;
-
-  @FXML
-  private TextField modifyPrice;
-
-  @FXML
-  private TextField modifyInv;
-
-  @FXML
-  private TextField modifyMax;
-
-  @FXML
-  private TextField modifyMin;
-
-  @FXML
-  private TextField modSourceID;
+  private TextField modifyID, modifyName, modifyPrice, modifyInv, modifyMax, modifyMin, modSourceID;
   
   private Part part;
   
@@ -81,7 +45,6 @@ public class ModifyPartController{
     modifyInv.setText(Integer.toString(part.getInStock()));
     modifyMin.setText(Integer.toString(part.getMin()));
     modifyMax.setText(Integer.toString(part.getMax()));
-
 
     if(part instanceof InHouse){
       inHouse.setSelected(true);
@@ -98,7 +61,6 @@ public class ModifyPartController{
   
   @FXML
   private void savePart(){
-    System.out.println("You clicked savePart");
 
     this.part.setName(modifyName.getText());
     this.part.setPrice(Double.parseDouble(modifyPrice.getText()));
@@ -123,7 +85,6 @@ public class ModifyPartController{
   public void cancel(Event e) {
       
     e.consume();
-    System.out.println("You clicked cancel");
 
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
     alert.initModality(Modality.APPLICATION_MODAL);

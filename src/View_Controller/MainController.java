@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package View_Controller;
 
 import Model.InHouse;
@@ -14,7 +10,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,50 +25,44 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-/**
- *
- * @author Austyn
- */
 public class MainController extends Application{
   
   @FXML
-  public TableView<Part> partsTable;
+  private TableView<Part> partsTable;
 
   @FXML
-  TableColumn<Part, Integer> partID;
+  private TableColumn<Part, Integer> partID;
 
   @FXML
-  TableColumn<Part, String> partName;
+  private TableColumn<Part, String> partName;
 
   @FXML
-  TableColumn<Part, Integer> invLevel;
+  private TableColumn<Part, Integer> invLevel;
 
   @FXML
-  TableColumn<Part, Double> pricePerUnit;
+  private TableColumn<Part, Double> pricePerUnit;
 
   @FXML
-  TableView<Product> productsTable;
+  private TableView<Product> productsTable;
 
   @FXML
-  TableColumn<Product, Integer> prodID;
+  private TableColumn<Product, Integer> prodID;
 
   @FXML
-  TableColumn<Product, String> prodName;
+  private TableColumn<Product, String> prodName;
 
   @FXML
-  TableColumn<Product, Integer> prodInvLvl;
+  private TableColumn<Product, Integer> prodInvLvl;
 
   @FXML
-  TableColumn<Product, Double> prodPrice;
+  private TableColumn<Product, Double> prodPrice;
   
-  public ObservableList<Part> parts = Inventory.allParts;
-  public ObservableList<Product> products = Inventory.products;
-//  public FilteredList<Part> filteredParts = Inventory.filteredParts;
-//  public static ModifyController modController;
-  Part currentPart;
+  private ObservableList<Part> parts = Inventory.allParts;
+  
+  private ObservableList<Product> products = Inventory.products;
   
   @FXML
-  TextField searchField, prodSearchField;
+  private TextField searchField, prodSearchField;
 
   @Override
   public void start(Stage stage){
@@ -82,7 +71,7 @@ public class MainController extends Application{
       Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
       Scene scene = new Scene(root);
       
-//      stage.setOnCloseRequest(event -> exitProgram(event));     
+      stage.setOnCloseRequest(event -> exitProgram(event));     
     
       stage.setTitle("Inventory");
       stage.setScene(scene);
@@ -94,8 +83,38 @@ public class MainController extends Application{
   }
   
   @FXML
+  public void initialize(){
+    partID.setCellValueFactory(new PropertyValueFactory<>("partID"));
+    partName.setCellValueFactory(new PropertyValueFactory<>("name"));
+    invLevel.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+    pricePerUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+    parts.add(new Outsourced("ABC company", Inventory.partIdCount++, "hammer", 19.99, 20, 1, 99));
+    parts.add(new Outsourced("ABC company", Inventory.partIdCount++, "Tool belt", 19.99, 20, 1, 99));
+    parts.add(new Outsourced("ABC company", Inventory.partIdCount++, "Nail", 19.99, 20, 1, 99));
+    parts.add(new Outsourced("ABC company", Inventory.partIdCount++, "Chisel", 19.99, 20, 1, 99));
+    parts.add(new InHouse(242, Inventory.partIdCount++, "Chisel", 19.99, 20, 1, 99));
+
+    partsTable.setItems(parts);
+
+    prodID.setCellValueFactory(new PropertyValueFactory<>("productID"));
+    prodName.setCellValueFactory(new PropertyValueFactory<>("name"));
+    prodInvLvl.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+    prodPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+      
+    products.add(new Product(FXCollections.observableArrayList(parts), Inventory.productIdCount++, "partPackage1", 29.00, 10, 1, 99));
+    products.add(new Product(FXCollections.observableArrayList(parts), Inventory.productIdCount++, "partPackage2", 27.00, 10, 1, 99));
+    products.add(new Product(FXCollections.observableArrayList(parts), Inventory.productIdCount++, "partPackage3", 26.00, 10, 1, 99));
+    products.add(new Product(FXCollections.observableArrayList(parts), Inventory.productIdCount++, "partPackage4", 25.00, 10, 1, 99));
+
+    productsTable.setItems(products);
+
+    partsTable.getSelectionModel().selectFirst();
+    productsTable.getSelectionModel().selectFirst();
+  }
+  
+  @FXML
   private void viewAddPartStage(){
-    System.out.println("You clicked add part");
     try{
       FXMLLoader addLoader = new FXMLLoader(getClass().getResource("AddPart.fxml"));
       Parent addPartParent = (Parent) addLoader.load();
@@ -110,8 +129,7 @@ public class MainController extends Application{
       stage.setScene(addPartScene);
       stage.setTitle("Add Part");
       stage.show();
-      
-      
+
     }catch(Exception e){
       e.printStackTrace();
     }
@@ -153,39 +171,10 @@ public class MainController extends Application{
     
     searchField.clear();
     
-//    searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-//
-//      filteredParts.setPredicate(part -> {
-//        
-//        if (newValue == null || newValue.isEmpty()) {
-//          return true;
-//        }
-//
-//        
-//        if(Integer.toString(part.getPartID()).contains(newValue)){
-//          partsTable.getSelectionModel().select(part);
-//          return true;
-//        }else if(newValue.length() > 1 && part.getName().toLowerCase().contains(newValue.toLowerCase())){
-//          partsTable.getSelectionModel().select(part);
-//          return true;
-//        }  
-//        
-//        return false;
-//      });
-//      
-//      SortedList<Part> sortedParts = new SortedList<>(filteredParts);
-//      
-//      sortedParts.comparatorProperty().bind(partsTable.comparatorProperty());
-//      
-//      partsTable.setItems(sortedParts);
-//    
-//    });
-    
   }
   
   @FXML
   private void viewModifyPartStage(){
-    System.out.println("You clicked modify part");
     try{
       FXMLLoader modPartFXML = new FXMLLoader(getClass().getResource("ModifyPart.fxml"));
       Parent modPartParent = (Parent) modPartFXML.load();
@@ -208,8 +197,25 @@ public class MainController extends Application{
     
   } 
   
+    
   @FXML
-  public void addProduct(){
+  private void deletePart(){
+    
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
+    alert.initModality(Modality.APPLICATION_MODAL);
+    alert.setTitle("Confirm Delete");
+    alert.setContentText("Are you sure you want to delete this part?");
+    alert.showAndWait();
+    
+    if(alert.getResult() == ButtonType.OK){
+      Inventory.deletePart(partsTable.getSelectionModel().getSelectedItem());
+    }else{
+      alert.close();
+    }  
+  }
+  
+  @FXML
+  public void viewAddProductStage(){
     try{
       FXMLLoader addProductFXML = new FXMLLoader(getClass().getResource("AddProduct.fxml"));
       Parent addProductParent = (Parent) addProductFXML.load();
@@ -219,7 +225,7 @@ public class MainController extends Application{
       
       Stage stage = new Stage();
 
-//      stage.setOnCloseRequest(event -> addProdController.cancel(event));
+      stage.setOnCloseRequest(event -> addProdController.cancel(event));
       addProdController.setAvailParts(parts);
       stage.initModality(Modality.APPLICATION_MODAL);
       stage.setScene(addProdScene);
@@ -232,17 +238,20 @@ public class MainController extends Application{
   }
   
   @FXML
-  public void modifyProduct(){
+  public void viewModifyProductStage(){
     try{
       FXMLLoader modifyProductFXML = new FXMLLoader(getClass().getResource("ModifyProduct.fxml"));
       Parent modifyProductParent = (Parent) modifyProductFXML.load();
       Scene modifyProdScene = new Scene(modifyProductParent);
 
       ModifyProductController modProdController = modifyProductFXML.getController();
-      modProdController.setProduct(productsTable.getSelectionModel().getSelectedItem());
+      modProdController.setProduct(productsTable.getSelectionModel().getSelectedIndex(),
+                                   productsTable.getSelectionModel().getSelectedItem());
+      modProdController.setAvailParts(parts);
       
       Stage stage = new Stage();
-
+      
+      stage.setOnCloseRequest(event -> modProdController.cancel(event));
       stage.initModality(Modality.APPLICATION_MODAL);
       stage.setScene(modifyProdScene);
       stage.setTitle("Modify Product");
@@ -256,7 +265,18 @@ public class MainController extends Application{
   @FXML
   private void deleteProduct(){
 
-    Inventory.removeProduct(productsTable.getSelectionModel().getSelectedItem());
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
+    alert.initModality(Modality.APPLICATION_MODAL);
+    alert.setTitle("Confirm Delete");
+    alert.setContentText("Are you sure you want to delete this product? It still has a part associated with it.");
+    alert.showAndWait();
+
+    if(alert.getResult() == ButtonType.OK){
+      Inventory.removeProduct(productsTable.getSelectionModel().getSelectedItem());
+    }else{
+      alert.close();
+    }
+    
   }
   
   @FXML
@@ -293,7 +313,7 @@ public class MainController extends Application{
     
     prodSearchField.clear();
   }
-  
+
   public void exitProgram(Event e){
     
     e.consume();
@@ -311,57 +331,8 @@ public class MainController extends Application{
     }
     
   }
-  
-  @FXML
-  public void initialize(){
-    partID.setCellValueFactory(new PropertyValueFactory<>("partID"));
-    partName.setCellValueFactory(new PropertyValueFactory<>("name"));
-    invLevel.setCellValueFactory(new PropertyValueFactory<>("inStock"));
-    pricePerUnit.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-    parts.add(new Outsourced("ABC company", 1, "hammer", 19.99, 20, 1, 99));
-    parts.add(new Outsourced("ABC company", 2, "Tool belt", 19.99, 20, 1, 99));
-    parts.add(new Outsourced("ABC company", 3, "Nail", 19.99, 20, 1, 99));
-    parts.add(new Outsourced("ABC company", 4, "Chisel", 19.99, 20, 1, 99));
-    parts.add(new InHouse(242, 4, "Chisel", 19.99, 20, 1, 99));
-
-    partsTable.setItems(parts);
-
-    prodID.setCellValueFactory(new PropertyValueFactory<>("productID"));
-    prodName.setCellValueFactory(new PropertyValueFactory<>("name"));
-    prodInvLvl.setCellValueFactory(new PropertyValueFactory<>("inStock"));
-    prodPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-      
-    products.add(new Product(parts, 546, "partPackage1", 29.00, 10, 1, 99));
-    products.add(new Product(parts, 546, "partPackage2", 27.00, 10, 1, 99));
-    products.add(new Product(parts, 546, "partPackage3", 26.00, 10, 1, 99));
-    products.add(new Product(parts, 546, "partPackage4", 25.00, 10, 1, 99));
-
-    productsTable.setItems(products);
-
-    partsTable.getSelectionModel().selectFirst();
-    productsTable.getSelectionModel().selectFirst();
-  }
-  
-  @FXML
-  private void deletePart(){
-    
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
-    alert.initModality(Modality.APPLICATION_MODAL);
-    alert.setTitle("Confirm Delete");
-    alert.setContentText("Are you sure you want to delete this part?");
-    alert.showAndWait();
-    
-    if(alert.getResult() == ButtonType.OK){
-      Inventory.deletePart(partsTable.getSelectionModel().getSelectedItem());
-    }else{
-      alert.close();
-    }
-    
-  }
-  
   public static void main(String[] args){
     launch(args);
   }
-  
 }

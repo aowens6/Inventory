@@ -1,25 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-
-/**
- *
- * @author Austyn
- */
 
 public class Inventory {
   
   public static ObservableList<Part> allParts = FXCollections.observableArrayList();
+  
   public static ObservableList<Product> products = FXCollections.observableArrayList();
-  public static ObservableList<Part> availableParts = FXCollections.observableArrayList(allParts);
-//  public static FilteredList<Part> filteredParts = new FilteredList(allParts, p -> true);
+  
+  public static int partIdCount = 100;
+  
+  public static int productIdCount = 200;
   
   public static void addPart(Part part){
     allParts.add(part);
@@ -39,8 +32,7 @@ public class Inventory {
       if(p.getPartID() == id){
         return p;
       }
-    }
-    
+    } 
     return null;
   }
   
@@ -51,10 +43,11 @@ public class Inventory {
         return p;
       }
     }
-    
     return null;
   }
   
+  
+  //PRODUCTS
   public static void addProduct(Product product){
     products.add(product);
   }
@@ -63,6 +56,11 @@ public class Inventory {
     products.set(index, product);
   }
   
+  public static boolean removeProduct(Product product){
+    products.remove(product);
+    return true;
+  }
+    
   public static Product lookupProduct(int id){
     for(Product p : products){
       if(p.getProductID() == id){
@@ -81,8 +79,4 @@ public class Inventory {
     return null;
   }
   
-  public static boolean removeProduct(Product product){
-    products.remove(product);
-    return true;
-  }
 }

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package View_Controller;
 
 import Model.Inventory;
@@ -25,11 +21,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author Austyn
- */
 public class AddProductController implements Initializable {
 
   @FXML
@@ -63,13 +54,11 @@ public class AddProductController implements Initializable {
   private TableColumn<Part, Double> assdPartPrice;
   
   @FXML
-  private TextField searchAvailParts, addProdName, addProdInv, addProdPrice, addProdMax, addProdMin;
+  private TextField searchAvailParts, addProdID, addProdName, addProdInv, addProdPrice, addProdMax, addProdMin;
   
-  public static ObservableList<Part> availableParts = Inventory.availableParts, assdParts;
+  private ObservableList<Part> availableParts, assdParts;
   
   private Part part;
-  
-//  private Product product = new Product();
   
   @Override
   public void initialize(URL url, ResourceBundle rb) {
@@ -79,13 +68,12 @@ public class AddProductController implements Initializable {
     prodPartInv.setCellValueFactory(new PropertyValueFactory<>("inStock"));
     prodPartPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
     
-//    partsAddTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-    
     assdPartID.setCellValueFactory(new PropertyValueFactory<>("partID"));
     assdPartName.setCellValueFactory(new PropertyValueFactory<>("name"));
     assdPartInv.setCellValueFactory(new PropertyValueFactory<>("inStock"));
     assdPartPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-  
+    
+    addProdID.setText(Integer.toString(Inventory.productIdCount));
   }  
   
   @FXML
@@ -94,15 +82,16 @@ public class AddProductController implements Initializable {
     boolean found = false;
     Part foundPart;
     
-    if(null != Product.lookupAssociatedPartName(searchAvailPartTxt)){
-      foundPart = Product.lookupAssociatedPartName(searchAvailPartTxt);
+    //First check if the search term matches a name of a part
+    if(null != Product.lookupAssociatedPartName(searchAvailPartTxt, availableParts)){
+      foundPart = Product.lookupAssociatedPartName(searchAvailPartTxt, availableParts);
       partsAddTable.getSelectionModel().select(foundPart);
       found = true;
     }else{ //otherwise, look for the id
       try{
         Integer searchInt = Integer.parseInt(searchAvailPartTxt);
-        if (null != Product.lookupAssociatedPart(searchInt)){
-          foundPart = Product.lookupAssociatedPart(searchInt);
+        if (null != Product.lookupAssociatedPart(searchInt, availableParts)){
+          foundPart = Product.lookupAssociatedPart(searchInt, availableParts);
           partsAddTable.getSelectionModel().select(foundPart);
           found = true;
         }
@@ -128,35 +117,66 @@ public class AddProductController implements Initializable {
     
     partsAddTable.setItems(availableParts);
   }
-  
+
   @FXML
   private void addAssdPart() {
-    
+
     part = (Part) partsAddTable.getSelectionModel().getSelectedItem();
     availableParts.remove(part);
     assdParts = assdPartsTable.getItems();
     assdParts.add(part);
     assdPartsTable.setItems(assdParts);
-    
+
   }
   
   @FXML
   private void deleteAssdPart() {
+    availableParts.add((Part) assdPartsTable.getSelectionModel().getSelectedItem());
     assdParts.remove(assdPartsTable.getSelectionModel().getSelectedIndex());
   }
   
   @FXML
   private void saveProduct() {
-    Product product = new Product();
-    product.setAssociatedParts(assdParts);
-    product.setProductID(99);
-    product.setName(addProdName.getText());
-    product.setPrice(Double.parseDouble(addProdPrice.getText()));
-    product.setInStock(Integer.parseInt(addProdInv.getText()));
-    product.setMax(Integer.parseInt(addProdMax.getText()));
-    product.setMin(Integer.parseInt(addProdMin.getText()));
     
-    Inventory.addProduct(product);
+    int prodMin = Integer.parseInt(addProdMin.getText());
+    int prodMax = Integer.parseInt(addProdMax.getText());
+    int prodInv = Integer.parseInt(addProdInv.getText());
+
+    if(prodMin > prodMax || 
+       prodMax < prodMin ||
+       prodInv < prodMin ||
+       prodInv > prodMax ) {
+      
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Bounds Error");
+      alert.setHeaderText("Inventory max and min out of bounds");
+      alert.setContentText("Please check that the max value is greater than the min value.");
+      alert.showAndWait();
+      
+    }else if(assdParts.isEmpty()){
+      
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Add Associated Part");
+      alert.setHeaderText("Associated parts list is empty");
+      alert.setContentText("Please make sure you have at least one associated part.");
+      alert.showAndWait();
+      
+    }else{
+      Product product = new Product();
+      product.setAssociatedParts(assdParts);
+      product.setProductID(Inventory.productIdCount++);
+      product.setName(addProdName.getText());
+      product.setPrice(Double.parseDouble(addProdPrice.getText()));
+      product.setInStock(prodInv);
+      product.setMax(prodMax);
+      product.setMin(prodMin);
+
+      Inventory.addProduct(product);
+
+      Stage stage = (Stage) anchorPane.getScene().getWindow();
+      stage.close();
+    }
+    
   }
 
   @FXML

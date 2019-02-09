@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package View_Controller;
 
 import Model.InHouse;
@@ -27,11 +23,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author Austyn
- */
 public class AddPartController implements Initializable {
     
   @FXML
@@ -41,34 +32,10 @@ public class AddPartController implements Initializable {
   private ToggleGroup sourceGroup;
 
   @FXML
-  private RadioButton inHouse;
-
-  @FXML
-  private RadioButton outSourced;
-
-  @FXML
   private Label sourceLabel;
 
   @FXML
-  private TextField addID;
-
-  @FXML
-  private TextField addName;
-
-  @FXML
-  private TextField addPrice;
-
-  @FXML
-  private TextField addInv;
-
-  @FXML
-  private TextField addMax;
-
-  @FXML
-  private TextField addMin;
-
-  @FXML
-  private TextField addMachineID;
+  private TextField addID, addName, addPrice, addInv, addMax, addMin, addSource;
 
   private String selectedSource;
 
@@ -76,53 +43,72 @@ public class AddPartController implements Initializable {
   public void initialize(URL url, ResourceBundle rb) {
     selectedSource = "In-house";
     sourceGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
+      
       public void changed(ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1) {
-        RadioButton chk = (RadioButton)t1.getToggleGroup().getSelectedToggle(); // Cast object to radio button
+        RadioButton chk = (RadioButton) t1.getToggleGroup().getSelectedToggle(); 
+        
         selectedSource = chk.getText();
       }
+      
     });
     
-// DUMMY DATA DELETE LATER
-    addID.setText("3");
+    addID.setText(Integer.toString(Inventory.partIdCount));
     addName.setText("Boot");
     addPrice.setText("99");
     addInv.setText("19");
     addMin.setText("1");
     addMax.setText("91");
-    addMachineID.setText("456");
+    addSource.setText("456");
     
-    
-//    stage.setOnCloseRequest(event -> cancel(event));
   }
   
 
   @FXML
   private void savePart() {
-    System.out.println("You clicked savePart");
-
-    if(selectedSource.equals("Outsourced")){
-      Part part = new Outsourced("Company Name",
-                                  100, 
-                                  addName.getText(), 
-                                  Double.parseDouble(addPrice.getText()), 
-                                  Integer.parseInt(addInv.getText()), 
-                                  Integer.parseInt(addMax.getText()), 
-                                  Integer.parseInt(addMin.getText()));
-      Inventory.addPart(part);
+    
+    int partMin = Integer.parseInt(addMin.getText());
+    int partMax = Integer.parseInt(addMax.getText());
+    int partInv = Integer.parseInt(addInv.getText());
+    
+    if(partMin > partMax ||
+       partMax < partMin ||
+       partInv > partMax ||
+       partInv < partMin){
+      
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Bounds Error");
+      alert.setHeaderText("Inventory max and min out of bounds");
+      alert.setContentText("Please check that the max value is greater than the min value"
+                           + " and the inventory fits between them.");
+      alert.showAndWait();
+      
     }else{
-      Part part = new InHouse(3000,
-                              100, 
-                              addName.getText(), 
-                              Double.parseDouble(addPrice.getText()), 
-                              Integer.parseInt(addInv.getText()), 
-                              Integer.parseInt(addMax.getText()), 
-                              Integer.parseInt(addMin.getText()));
+      if(selectedSource.equals("Outsourced")){
+        Part part = new Outsourced(addSource.getText(),
+                                    Inventory.partIdCount++, 
+                                    addName.getText(), 
+                                    Double.parseDouble(addPrice.getText()), 
+                                    partInv, 
+                                    partMax, 
+                                    partMin);
+        Inventory.addPart(part);
+      }else{
+        Part part = new InHouse(Integer.parseInt(addSource.getText()),
+                                Inventory.partIdCount++, 
+                                addName.getText(), 
+                                Double.parseDouble(addPrice.getText()), 
+                                partInv, 
+                                partMax, 
+                                partMin);
 
-      Inventory.addPart(part);
+        Inventory.addPart(part);
+      }
+
+      Stage stage = (Stage) anchorPane.getScene().getWindow();
+      stage.close();
     }
 
-    Stage stage = (Stage) anchorPane.getScene().getWindow();
-    stage.close();
+    
 
   }
 
@@ -130,7 +116,6 @@ public class AddPartController implements Initializable {
   public void cancel(Event e) {
       
     e.consume();
-    System.out.println("You clicked cancel");
 
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
     alert.initModality(Modality.APPLICATION_MODAL);

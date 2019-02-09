@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="484.0" prefWidth="834.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.ModifyProductController">
+<AnchorPane fx:id="anchorPane" id="AnchorPane" prefHeight="484.0" prefWidth="834.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.ModifyProductController">
     <children>
       <Label fx:id="titleLabel" layoutX="14.0" layoutY="32.0" text="Modify Product">
          <font>
@@ -63,7 +63,7 @@
       
       <HBox layoutX="502.0" layoutY="27.0" spacing="10.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#searchAvailParts" text="Search " />
+            <Button mnemonicParsing="false" onAction="#searchAvailParts" text="Search " prefHeight="39.0" prefWidth="77.0"/>
             <TextField fx:id="searchAvailParts" prefHeight="39.0" prefWidth="170.0" />
          </children>
       </HBox>
@@ -77,7 +77,7 @@
         </columns>
       </TableView>
       
-      <Button layoutX="708.0" layoutY="212.0" mnemonicParsing="false" onAction="#addProduct" prefHeight="39.0" prefWidth="77.0" text="Add" />
+      <Button layoutX="708.0" layoutY="212.0" mnemonicParsing="false" onAction="#addAssdPart" prefHeight="39.0" prefWidth="77.0" text="Add" />
       
       <TableView fx:id="assdPartsTable" layoutX="409.0" layoutY="260.0" prefHeight="110.0" prefWidth="393.0">
          <columns>
@@ -87,10 +87,10 @@
             <TableColumn fx:id="associatedPartPrice" minWidth="0.0" prefWidth="109.38201904296875" text="Price Per Unit" />
          </columns>
       </TableView>
-      <Button layoutX="708.0" layoutY="378.0" mnemonicParsing="false" onAction="#deleteProduct" prefHeight="39.0" prefWidth="77.0" text="Delete" />
+      <Button layoutX="708.0" layoutY="378.0" mnemonicParsing="false" onAction="#deleteAssdPart" prefHeight="39.0" prefWidth="77.0" text="Delete" />
       
-      <Button fx:id="saveBtn" layoutX="620.0" layoutY="428.0" mnemonicParsing="false" onAction="#saveProduct" prefHeight="39.0" prefWidth="77.0" text="Save" />
-      <Button layoutX="708.0" layoutY="428.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+      <Button layoutX="620.0" layoutY="428.0" mnemonicParsing="false" onAction="#saveProduct" prefHeight="39.0" prefWidth="77.0" text="Save" />
+      <Button layoutX="708.0" layoutY="428.0" mnemonicParsing="false" onAction="#cancel" prefHeight="39.0" prefWidth="77.0" text="Cancel" />
    </children>
     
 </AnchorPane>

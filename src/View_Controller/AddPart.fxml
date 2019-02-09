@@ -69,10 +69,10 @@
       <HBox layoutX="27.0" layoutY="347.0" prefHeight="41.0" prefWidth="345.0">
          <children>
             <Label fx:id="sourceLabel" prefHeight="41.0" prefWidth="137.0" text="Machine ID" />
-            <TextField fx:id="addMachineID" layoutX="168.0" layoutY="230.0" prefHeight="39.0" prefWidth="172.0" />
+            <TextField fx:id="addSource" layoutX="168.0" layoutY="230.0" prefHeight="39.0" prefWidth="172.0" />
          </children>
       </HBox>
       <Button layoutX="248.0" layoutY="408.0" mnemonicParsing="false" onAction="#savePart" prefHeight="39.0" prefWidth="77.0" text="Save" />
-      <Button layoutX="347.0" layoutY="408.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+      <Button layoutX="347.0" layoutY="408.0" mnemonicParsing="false" onAction="#cancel" prefHeight="39.0" prefWidth="77.0" text="Cancel" />
    </children>
 </AnchorPane>
