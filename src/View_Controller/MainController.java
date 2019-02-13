@@ -116,13 +116,13 @@ public class MainController extends Application{
   @FXML
   private void viewAddPartStage(){
     try{
-      FXMLLoader addLoader = new FXMLLoader(getClass().getResource("AddPart.fxml"));
+      FXMLLoader addLoader = new FXMLLoader(getClass().getResource("Part.fxml"));
       Parent addPartParent = (Parent) addLoader.load();
       Scene addPartScene = new Scene(addPartParent);
 
       Stage stage = new Stage();
       
-      AddPartController addController = addLoader.getController();
+      PartController addController = addLoader.getController();
       stage.setOnCloseRequest(event -> addController.cancel(event));
       
       stage.initModality(Modality.APPLICATION_MODAL);
@@ -176,12 +176,13 @@ public class MainController extends Application{
   @FXML
   private void viewModifyPartStage(){
     try{
-      FXMLLoader modPartFXML = new FXMLLoader(getClass().getResource("ModifyPart.fxml"));
+      FXMLLoader modPartFXML = new FXMLLoader(getClass().getResource("Part.fxml"));
       Parent modPartParent = (Parent) modPartFXML.load();
       Scene modPartScene = new Scene(modPartParent);
       
-      ModifyPartController modController = modPartFXML.getController();
-      modController.setPart(partsTable.getSelectionModel().getSelectedItem());
+      PartController modController = modPartFXML.getController();
+      modController.setPart(partsTable.getSelectionModel().getSelectedIndex(),
+                            partsTable.getSelectionModel().getSelectedItem());
       
       Stage stage = new Stage();
       

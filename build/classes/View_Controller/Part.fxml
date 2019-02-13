@@ -7,9 +7,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="462.0" prefWidth="488.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.AddPartController">
+<AnchorPane fx:id="anchorPane" prefHeight="462.0" prefWidth="488.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.PartController">
    <children>
-      <Label fx:id="addModLabel" layoutX="14.0" layoutY="32.0" text="Add Part">
+      <Label fx:id="titleLabel" layoutX="14.0" layoutY="32.0" text="Add Part">
          <font>
             <Font size="24.0" />
          </font>
@@ -72,7 +72,7 @@
             <TextField fx:id="addSource" layoutX="168.0" layoutY="230.0" prefHeight="39.0" prefWidth="172.0" />
          </children>
       </HBox>
-      <Button layoutX="248.0" layoutY="408.0" mnemonicParsing="false" onAction="#savePart" prefHeight="39.0" prefWidth="77.0" text="Save" />
+      <Button fx:id="saveBtn" layoutX="248.0" layoutY="408.0" mnemonicParsing="false" onAction="#savePart" prefHeight="39.0" prefWidth="77.0" text="Save" />
       <Button layoutX="347.0" layoutY="408.0" mnemonicParsing="false" onAction="#cancel" prefHeight="39.0" prefWidth="77.0" text="Cancel" />
    </children>
 </AnchorPane>
