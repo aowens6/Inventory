@@ -3,6 +3,10 @@ package Model;
 public class InHouse extends Part {
   
   private int machineID;
+  
+  public InHouse(){
+    
+  }
 
   public int getMachineID() {
     return machineID;

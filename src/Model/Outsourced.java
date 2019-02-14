@@ -12,6 +12,10 @@ package Model;
 public class Outsourced extends Part{
   
   private String companyName;
+  
+  public Outsourced(){
+    
+  }
 
   public String getCompanyName() {
     return companyName;

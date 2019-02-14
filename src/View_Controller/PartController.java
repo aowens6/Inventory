@@ -42,12 +42,12 @@ public class PartController implements Initializable {
   private RadioButton outSourced;
 
   @FXML
-  private TextField addID, addName, addPrice, addInv, addMax, addMin, addSource;
+  private TextField partID, partName, partPrice, partInv, partMax, partMin, partSource;
   
   @FXML
   public Button saveBtn;
 
-  private String selectedSource;
+  private boolean isInhouse;
   
   private boolean modifying;
   
@@ -57,34 +57,31 @@ public class PartController implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    selectedSource = "In-house";
+    isInhouse = true;
     
     //setting up a change listener to find the radio button source
-    //and change the sourceLabel accordingly
+    //and change the isInhouse flag accordingly
     sourceGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
       
       public void changed(ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1) {
         RadioButton checkedBtn = (RadioButton) t1.getToggleGroup().getSelectedToggle(); 
         
-        selectedSource = checkedBtn.getText();
+        if(checkedBtn.getText().equals("In-house")){
+          isInhouse = true;
+        }else{
+          isInhouse = false;
+        }
+        System.out.println(isInhouse);
       }
       
     });
-    
-    addID.setText(Integer.toString(Inventory.partIdCount));
-    addName.setText("Boot");
-    addPrice.setText("99");
-    addInv.setText("19");
-    addMin.setText("1");
-    addMax.setText("91");
-    addSource.setText("456");
     
   }
   
   @FXML
   private void sourceToggle() {
 
-    if(selectedSource.equals("Outsourced")){
+    if(isInhouse){
       sourceLabel.setText("Company Name");
     }else{
       sourceLabel.setText("Machine ID");
@@ -95,44 +92,47 @@ public class PartController implements Initializable {
   public void setPart(int index, Part part){
     
     modifying = true;
+    titleLabel.setText("Modify Part");
     
     this.index = index;
     this.part = part;
     
-    addID.setText(Integer.toString(part.getPartID()));
-    addName.setText(part.getName());
-    addPrice.setText(Double.toString(part.getPrice()));
-    addInv.setText(Integer.toString(part.getInStock()));
-    addMin.setText(Integer.toString(part.getMin()));
-    addMax.setText(Integer.toString(part.getMax()));
+    partID.setText(Integer.toString(part.getPartID()));
+    partName.setText(part.getName());
+    partPrice.setText(Double.toString(part.getPrice()));
+    partInv.setText(Integer.toString(part.getInStock()));
+    partMin.setText(Integer.toString(part.getMin()));
+    partMax.setText(Integer.toString(part.getMax()));
 
     if(part instanceof InHouse){
       inHouse.setSelected(true);
       InHouse p = (InHouse) part;
-      addSource.setText(Integer.toString(p.getMachineID()));
+      partSource.setText(Integer.toString(p.getMachineID()));
     }else{
       outSourced.setSelected(true);
       sourceLabel.setText("Company Name");
       Outsourced p = (Outsourced) part;
-      addSource.setText(p.getCompanyName());
+      partSource.setText(p.getCompanyName());
     }
 
   }
   
-  private boolean isInput(){
+  private boolean isValidInput(){
     
-    int partMin = 0;
-    int partMax = 0;
-    int partInv = 0;
-    boolean input = true;
+    int partMinInt = 0;
+    int partMaxInt = 0;
+    int partInvInt = 0;
+    double partPriceDbl = 0.0;
+    int machineIdInt = 0;
+    boolean validInput = true;
     
-    if (addName.getText().trim().equals("") || 
-        addPrice.getText().trim().equals("") ||
-        addInv.getText().trim().equals("") ||
-        addMax.getText().trim().equals("") ||    
-        addMin.getText().trim().equals("") ){
+    if (partName.getText().trim().equals("") || 
+        partPrice.getText().trim().equals("") ||
+        partInv.getText().trim().equals("") ||
+        partMax.getText().trim().equals("") ||    
+        partMin.getText().trim().equals("") ){
       
-      input = false;
+      validInput = false;
       
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
       alert.setTitle("Missing Value");
@@ -140,17 +140,43 @@ public class PartController implements Initializable {
       alert.setContentText("All fields are mandatory.");
       alert.showAndWait();
       
-    }else{
-      partMin = Integer.parseInt(addMin.getText());
-      partMax = Integer.parseInt(addMax.getText());
-      partInv = Integer.parseInt(addInv.getText());
     }
     
-    if(partMax < partMin ||
-       partInv > partMax ||
-       partInv < partMin) {
+    if(isInhouse){
+      try{
+        machineIdInt = Integer.parseInt(partSource.getText());
+      }catch(NumberFormatException e){
+        
+        validInput = false;
+        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Not a number");
+        alert.setHeaderText("Machine ID must be a number");
+        alert.setContentText("Please check for numeric input");
+        alert.showAndWait();
+        
+      }
+    }
+    
+    try{
+      partMinInt = Integer.parseInt(partMin.getText());
+      partMaxInt = Integer.parseInt(partMax.getText());
+      partInvInt = Integer.parseInt(partInv.getText());
+      partPriceDbl = Double.parseDouble(partPrice.getText());
+    }catch (NumberFormatException e){
+      validInput = false;
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Not a number");
+      alert.setHeaderText("Price, Inventory, Min and Max must be numbers");
+      alert.setContentText("Please check number fields for numeric input");
+      alert.showAndWait();
+    }
+    
+    if(partMaxInt < partMinInt ||
+       partInvInt > partMaxInt ||
+       partInvInt < partMinInt) {
       
-      input = false;
+      validInput = false;
       
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
       alert.setTitle("Bounds Error");
@@ -161,41 +187,56 @@ public class PartController implements Initializable {
       
     }
     
-    return input;
+    return validInput;
     
   }
   
   @FXML
   public void savePart() {
-
-    if(isInput()){
+    
+    if(isValidInput()){
+      
+      if(!isInhouse){
         
-        if(selectedSource.equals("Outsourced")){
-          part = new Outsourced(addSource.getText(),
-                                     Inventory.partIdCount++, 
-                                     addName.getText(), 
-                                     Double.parseDouble(addPrice.getText()), 
-                                     Integer.parseInt(addInv.getText()), 
-                                     Integer.parseInt(addMax.getText()), 
-                                     Integer.parseInt(addMin.getText()));
-        }else{//In-House radio button is selected
-          part = new InHouse(Integer.parseInt(addSource.getText()),
-                                  Inventory.partIdCount++, 
-                                  addName.getText(), 
-                                  Double.parseDouble(addPrice.getText()), 
-                                  Integer.parseInt(addInv.getText()), 
-                                  Integer.parseInt(addMax.getText()), 
-                                  Integer.parseInt(addMin.getText()));
-        }
+        Outsourced newPart = new Outsourced();
+        newPart.setCompanyName(partSource.getText());
+        newPart.setName(partName.getText());
+        newPart.setPrice(Double.parseDouble(partPrice.getText())); 
+        newPart.setInStock(Integer.parseInt(partInv.getText()));
+        newPart.setMax(Integer.parseInt(partMax.getText()));
+        newPart.setMin(Integer.parseInt(partMin.getText()));
         
         if(modifying){
-          Inventory.updatePart(index, part);
+          newPart.setPartID(part.getPartID());
+          Inventory.updatePart(index, newPart);
         }else{
-          Inventory.addPart(part);
+          newPart.setPartID(Inventory.partIdCount++);
+          Inventory.addPart(newPart);
         }
+        
+      }else{//In-House radio button is selected
+        InHouse newPart = new InHouse();
+        newPart.setMachineID(Integer.parseInt(partSource.getText()));
+        newPart.setName(partName.getText());
+        newPart.setPrice(Double.parseDouble(partPrice.getText()));
+        newPart.setInStock(Integer.parseInt(partInv.getText()));
+        newPart.setMax(Integer.parseInt(partMax.getText()));
+        newPart.setMin(Integer.parseInt(partMin.getText()));
+
+        
+        if(modifying){
+          newPart.setPartID(part.getPartID());
+          Inventory.updatePart(index, newPart);
+        }else{
+          newPart.setPartID(Inventory.partIdCount++);
+          Inventory.addPart(newPart);
+        }
+        
+      }
         
         Stage stage = (Stage) anchorPane.getScene().getWindow();
         stage.close();
+        
       }
 
   }

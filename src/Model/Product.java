@@ -5,7 +5,7 @@ import javafx.collections.ObservableList;
 
 public class Product {
   
-  private static ObservableList<Part> associatedParts;
+  private ObservableList<Part> associatedParts;
   private int productID;
   private String name;
   private double price;
@@ -27,15 +27,21 @@ public class Product {
     this.max = max;
   }
   
-  public static void addAssociatedPart(Part part){
-    System.out.println("In addpart");
+  public void addAssociatedPart(Part part){
     associatedParts.add(part);
   }
   
-  public static boolean removeAssociatedPart(int index){
-    associatedParts.remove(index);
-    return true;
+  public boolean removeAssociatedPart(int id){
+    
+    for(Part p : associatedParts){
+      if(p.getPartID() == id){
+        associatedParts.remove(p);
+        return true;
+      }
+    }
+    return false;
   }
+  
   
   public static Part lookupAssociatedPart(int id, ObservableList<Part> availableParts){
 
@@ -47,7 +53,7 @@ public class Product {
     return null;
   }
   
-  public static Part lookupAssociatedPartName(String name, ObservableList<Part> availableParts){
+  public static Part lookupAssociatedPart(String name, ObservableList<Part> availableParts){
 
     for(Part p : availableParts){
       if(p.getName().toLowerCase().contains(name)){

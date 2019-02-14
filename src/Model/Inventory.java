@@ -36,7 +36,7 @@ public class Inventory {
     return null;
   }
   
-  public static Part lookupPartName(String name){
+  public static Part lookupPart(String name){
     
     for(Part p : allParts){
       if(p.getName().toLowerCase().contains(name)){
@@ -70,7 +70,7 @@ public class Inventory {
     return null;
   }
   
-  public static Product lookupProductName(String name){
+  public static Product lookupProduct(String name){
     for(Product p : products){
       if(p.getName().toLowerCase().contains(name)){
         return p;

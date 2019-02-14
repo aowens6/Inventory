@@ -143,16 +143,16 @@ public class MainController extends Application{
     boolean found = false;
     Part foundPart;
     
+    foundPart = Inventory.lookupPart(searchText);
     //First check if the search term matches a name of a part
-    if(null != Inventory.lookupPartName(searchText)){
-      foundPart = Inventory.lookupPartName(searchText);
+    if(null != foundPart){
       partsTable.getSelectionModel().select(foundPart);
       found = true;
     }else{ //otherwise, look for the id
       try{
         Integer searchInt = Integer.parseInt(searchText);
-        if (null != Inventory.lookupPart(searchInt)){
-          foundPart = Inventory.lookupPart(searchInt);
+        foundPart = Inventory.lookupPart(searchInt);
+        if (null != foundPart){
           partsTable.getSelectionModel().select(foundPart);
           found = true;
         }
@@ -227,7 +227,6 @@ public class MainController extends Application{
       Stage stage = new Stage();
 
       stage.setOnCloseRequest(event -> addProdController.cancel(event));
-      addProdController.setAvailParts(parts);
       stage.initModality(Modality.APPLICATION_MODAL);
       stage.setScene(addProdScene);
       stage.setTitle("Add Product");
@@ -248,7 +247,6 @@ public class MainController extends Application{
       ModifyProductController modProdController = modifyProductFXML.getController();
       modProdController.setProduct(productsTable.getSelectionModel().getSelectedIndex(),
                                    productsTable.getSelectionModel().getSelectedItem());
-      modProdController.setAvailParts(parts);
       
       Stage stage = new Stage();
       
@@ -286,16 +284,17 @@ public class MainController extends Application{
     boolean found = false;
     Product foundProduct;
     
+    foundProduct = Inventory.lookupProduct(searchText);
+    
     //First check if the search term matches a name of a product
-    if(null != Inventory.lookupProductName(searchText)){
-      foundProduct = Inventory.lookupProductName(searchText);
+    if(null != foundProduct){
       productsTable.getSelectionModel().select(foundProduct);
       found = true;
     }else{ //otherwise, look for the id
       try{
         Integer searchInt = Integer.parseInt(searchText);
-        if (null != Inventory.lookupProduct(searchInt)){
-          foundProduct = Inventory.lookupProduct(searchInt);
+        foundProduct = Inventory.lookupProduct(searchInt);
+        if (null != foundProduct){
           productsTable.getSelectionModel().select(foundProduct);
           found = true;
         }

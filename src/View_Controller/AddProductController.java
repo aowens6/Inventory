@@ -27,7 +27,7 @@ public class AddProductController implements Initializable {
   private AnchorPane anchorPane;
   
   @FXML
-  private TableView partsAddTable, assdPartsTable;
+  private TableView<Part> partsAddTable, assdPartsTable;
   
   @FXML
   private TableColumn<Part, Integer> prodPartID;
@@ -58,8 +58,6 @@ public class AddProductController implements Initializable {
   
   private ObservableList<Part> availableParts, assdParts;
   
-  private Part part;
-  
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     
@@ -74,6 +72,9 @@ public class AddProductController implements Initializable {
     assdPartPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
     
     addProdID.setText(Integer.toString(Inventory.productIdCount));
+    
+    availableParts = FXCollections.observableArrayList(Inventory.allParts);
+    partsAddTable.setItems(availableParts);
   }  
   
   @FXML
@@ -82,16 +83,17 @@ public class AddProductController implements Initializable {
     boolean found = false;
     Part foundPart;
     
+    foundPart = Product.lookupAssociatedPart(searchAvailPartTxt, availableParts);
     //First check if the search term matches a name of a part
-    if(null != Product.lookupAssociatedPartName(searchAvailPartTxt, availableParts)){
-      foundPart = Product.lookupAssociatedPartName(searchAvailPartTxt, availableParts);
+    if(null != foundPart){
+      
       partsAddTable.getSelectionModel().select(foundPart);
       found = true;
     }else{ //otherwise, look for the id
       try{
         Integer searchInt = Integer.parseInt(searchAvailPartTxt);
-        if (null != Product.lookupAssociatedPart(searchInt, availableParts)){
-          foundPart = Product.lookupAssociatedPart(searchInt, availableParts);
+        foundPart = Product.lookupAssociatedPart(searchInt, availableParts);
+        if (null != foundPart){
           partsAddTable.getSelectionModel().select(foundPart);
           found = true;
         }
@@ -110,79 +112,135 @@ public class AddProductController implements Initializable {
     
     searchAvailParts.clear();
   }
-  
-  public void setAvailParts(ObservableList<Part> parts){
-    //creating a copy of allParts when this is called from MainController
-    this.availableParts = FXCollections.observableArrayList(parts);
-    
-    partsAddTable.setItems(availableParts);
-  }
 
   @FXML
   private void addAssdPart() {
 
-    part = (Part) partsAddTable.getSelectionModel().getSelectedItem();
-    availableParts.remove(part);
-    assdParts = assdPartsTable.getItems();
-    assdParts.add(part);
-    assdPartsTable.setItems(assdParts);
-
+    Part addPart = partsAddTable.getSelectionModel().getSelectedItem();
+    if(addPart != null){
+      availableParts.remove(addPart);
+      assdParts = assdPartsTable.getItems();
+      assdParts.add(addPart);
+      assdPartsTable.setItems(assdParts);
+    }
+    
   }
   
   @FXML
   private void deleteAssdPart() {
-    availableParts.add((Part) assdPartsTable.getSelectionModel().getSelectedItem());
-    assdParts.remove(assdPartsTable.getSelectionModel().getSelectedIndex());
+    
+    Part removePart = assdPartsTable.getSelectionModel().getSelectedItem();
+    if (removePart != null){
+      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+      alert.setTitle("Confirm Delete");
+      alert.setHeaderText("Confirm Delete");
+      alert.setContentText("Are you sure you want to delete this associated part?");
+      alert.showAndWait();
+      
+      if(alert.getResult() == ButtonType.OK){
+        availableParts.add(removePart);
+        assdParts.remove(removePart);
+      }else{
+        alert.close();
+      }
+
+    }
+    
+  }
+  
+  private boolean isValidInput(){
+    
+    int prodMinInt = 0;
+    int prodMaxInt = 0;
+    int prodInvInt = 0;
+    double prodPriceDbl = 0.0;
+    boolean validInput = true;
+    
+    if (addProdName.getText().trim().equals("") ||
+        addProdInv.getText().trim().equals("") ||
+        addProdPrice.getText().trim().equals("") ||
+        addProdMax.getText().trim().equals("") ||
+        addProdMin.getText().trim().equals("") ){
+      
+      validInput = false;
+      
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Missing Value");
+      alert.setHeaderText("At least one of the inputs is missing a value");
+      alert.setContentText("All fields are mandatory.");
+      alert.showAndWait();
+      
+    }
+      
+    try{
+      prodMinInt = Integer.parseInt(addProdMin.getText());
+      prodMaxInt = Integer.parseInt(addProdMax.getText());
+      prodInvInt = Integer.parseInt(addProdInv.getText());
+      prodPriceDbl = Double.parseDouble(addProdPrice.getText());
+    }catch(NumberFormatException e){
+      validInput = false;
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Not a number");
+      alert.setHeaderText("Price, Inventory, Min and Max must be numbers");
+      alert.setContentText("Please check number fields for numeric input");
+      alert.showAndWait();
+    }
+    
+    if (prodMaxInt < prodMinInt ||
+        prodInvInt < prodMinInt ||
+        prodInvInt > prodMaxInt){
+      
+      validInput = false;
+      
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Bounds Error");
+      alert.setHeaderText("Inventory max and min out of bounds");
+      alert.setContentText("Please check that the max value is greater than the min value"
+                           + " and the inventory fits between them.");
+      alert.showAndWait();
+      
+    }
+    
+    if (assdPartsTable.getItems().isEmpty()){
+      
+      validInput = false;
+      
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Associated Parts Missing");
+      alert.setHeaderText("Associated parts is empty");
+      alert.setContentText("Please make sure there is at least one associated part");
+      alert.showAndWait();
+      
+    }
+    
+    return validInput;
+    
   }
   
   @FXML
   private void saveProduct() {
     
-    int prodMin = Integer.parseInt(addProdMin.getText());
-    int prodMax = Integer.parseInt(addProdMax.getText());
-    int prodInv = Integer.parseInt(addProdInv.getText());
-
-    if(prodMin > prodMax || 
-       prodMax < prodMin ||
-       prodInv < prodMin ||
-       prodInv > prodMax ) {
-      
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Bounds Error");
-      alert.setHeaderText("Inventory max and min out of bounds");
-      alert.setContentText("Please check that the max value is greater than the min value.");
-      alert.showAndWait();
-      
-    }else if(assdParts.isEmpty()){
-      
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Add Associated Part");
-      alert.setHeaderText("Associated parts list is empty");
-      alert.setContentText("Please make sure you have at least one associated part.");
-      alert.showAndWait();
-      
-    }else{
+    if (isValidInput()){
       Product product = new Product();
       product.setAssociatedParts(assdParts);
       product.setProductID(Inventory.productIdCount++);
       product.setName(addProdName.getText());
       product.setPrice(Double.parseDouble(addProdPrice.getText()));
-      product.setInStock(prodInv);
-      product.setMax(prodMax);
-      product.setMin(prodMin);
+      product.setInStock(Integer.parseInt(addProdInv.getText()));
+      product.setMax(Integer.parseInt(addProdMax.getText()));
+      product.setMin(Integer.parseInt(addProdMin.getText()));
 
       Inventory.addProduct(product);
 
       Stage stage = (Stage) anchorPane.getScene().getWindow();
       stage.close();
     }
-    
+
   }
 
   @FXML
   public void cancel(Event e) {
     e.consume();
-    System.out.println("You clicked cancel");
 
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION); 
     alert.initModality(Modality.APPLICATION_MODAL);
